@@ -1,0 +1,346 @@
+@import "tailwindcss";
+
+@theme {
+  /* ============================================
+     NODAL STUDIO — ANALOG PRECISION DESIGN SYSTEM
+     ============================================ */
+
+  /* Color Palette: Warm Neutral */
+  --color-bg-canvas: #0d0d0d;
+  --color-bg-elevated: #161616;
+  --color-bg-subtle: #1c1c1c;
+  --color-bg-hover: #222222;
+
+  --color-border-default: #2a2a2a;
+  --color-border-strong: #3d3d3d;
+  --color-border-subtle: #1f1f1f;
+
+  --color-text-primary: #f5f0e8;
+  --color-text-secondary: #a09a8c;
+  --color-text-tertiary: #6b665c;
+
+  --color-accent-gold: #c9a227;
+  --color-accent-copper: #b87333;
+  --color-accent-gold-muted: rgba(201, 162, 39, 0.15);
+
+  --color-status-ready: #5c9e5c;
+  --color-status-locked: #4a4a4a;
+
+  /* Typography */
+  --font-family-display: "Instrument Serif", Georgia, serif;
+  --font-family-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --font-family-mono: "IBM Plex Mono", monospace;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--font-family-sans);
+  background-color: var(--color-bg-canvas);
+  color: var(--color-text-primary);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: var(--color-accent-gold-muted);
+  color: var(--color-text-primary);
+}
+
+/* ============================================
+   TYPOGRAPHY UTILITIES
+   ============================================ */
+
+.font-display {
+  font-family: var(--font-family-display);
+  font-weight: 400;
+}
+
+.font-sans {
+  font-family: var(--font-family-sans);
+}
+
+.font-mono {
+  font-family: var(--font-family-mono);
+}
+
+.text-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+/* ============================================
+   PANEL SYSTEM
+   ============================================ */
+
+.panel {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-default);
+  border-radius: 12px;
+}
+
+.panel-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.panel-body {
+  padding: 16px 20px;
+}
+
+/* ============================================
+   BUTTON SYSTEM
+   ============================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-family-sans);
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-primary {
+  background: var(--color-accent-gold);
+  color: #0d0d0d;
+  border-color: var(--color-accent-gold);
+}
+
+.btn-primary:hover {
+  background: #d4ad2e;
+  border-color: #d4ad2e;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border-color: var(--color-border-default);
+}
+
+.btn-ghost:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text-primary);
+  border-color: var(--color-border-strong);
+}
+
+/* ============================================
+   CARD SYSTEM
+   ============================================ */
+
+.card {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-default);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all var(--transition-normal);
+}
+
+.card:hover {
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-md);
+}
+
+.card-locked {
+  opacity: 0.5;
+  filter: grayscale(0.5);
+  pointer-events: none;
+}
+
+/* ============================================
+   BADGE SYSTEM
+   ============================================ */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  border-radius: 6px;
+}
+
+.badge-ready {
+  background: rgba(92, 158, 92, 0.15);
+  color: #7cb87c;
+  border: 1px solid rgba(92, 158, 92, 0.25);
+}
+
+.badge-gold {
+  background: var(--color-accent-gold-muted);
+  color: var(--color-accent-gold);
+  border: 1px solid rgba(201, 162, 39, 0.25);
+}
+
+/* ============================================
+   INPUT SYSTEM
+   ============================================ */
+
+.input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-family: var(--font-family-sans);
+  color: var(--color-text-primary);
+  background: var(--color-bg-canvas);
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.input:focus {
+  border-color: var(--color-accent-copper);
+  box-shadow: 0 0 0 3px rgba(184, 115, 51, 0.15);
+}
+
+/* ============================================
+   ASSET CARD (Builder)
+   ============================================ */
+
+.asset-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 12px;
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 10px;
+  cursor: grab;
+  transition: all var(--transition-fast);
+}
+
+.asset-card:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-border-default);
+}
+
+.asset-card:active {
+  cursor: grabbing;
+}
+
+.asset-card-icon {
+  color: var(--color-text-tertiary);
+  transition: color var(--transition-fast);
+}
+
+.asset-card:hover .asset-card-icon {
+  color: var(--color-accent-copper);
+}
+
+.asset-card-name {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.asset-card:hover .asset-card-name {
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   CHAT BUBBLES (AI Terminal)
+   ============================================ */
+
+.chat-bubble {
+  max-width: 85%;
+  padding: 10px 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  border-radius: 10px;
+}
+
+.chat-bubble-user {
+  background: var(--color-accent-gold-muted);
+  color: var(--color-text-primary);
+  border: 1px solid rgba(201, 162, 39, 0.2);
+}
+
+.chat-bubble-system {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-subtle);
+  font-family: var(--font-family-mono);
+  font-size: 12px;
+}
+
+/* ============================================
+   COLOR SWATCH (Quick Presets)
+   ============================================ */
+
+.swatch {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-default);
+  cursor: pointer;
+  transition:
+    transform var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.swatch:hover {
+  transform: scale(1.1);
+  border-color: var(--color-border-strong);
+}
+
+/* ============================================
+   TOOLBAR
+   ============================================ */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 56px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-default);
+  border-radius: 12px;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--color-border-default);
+  margin: 0 16px;
+}
