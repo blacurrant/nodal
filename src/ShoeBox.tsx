@@ -70,6 +70,7 @@ export default function ShoeBox({ id, name, price, position, rotation = [0, 0, 0
             onClick={handleClick}
             onPointerOver={() => setHovered(true)}
             onPointerOut={() => setHovered(false)}
+            userData={{ productId: id }}
         >
             {/* Box Body */}
             <mesh castShadow receiveShadow position={[0, boxArgs[1] / 2, 0]}>

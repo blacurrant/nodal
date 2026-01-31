@@ -1,12 +1,10 @@
 import { MeshReflectorMaterial, useTexture, Environment, RoundedBox } from '@react-three/drei'
-import { ThreeEvent } from '@react-three/fiber'
 // @ts-ignore
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib'
 import * as THREE from 'three'
 import StoreManager from './StoreManager'
 import Player from './Player'
 import HeroObject from './HeroObject'
-import useStore from './store'
 import { useMemo, useEffect } from 'react'
 import ShoeBox from './ShoeBox' // Kept single import
 import { PRODUCTS } from './store'
@@ -17,7 +15,6 @@ RectAreaLightUniformsLib.init()
 
 function Ground() {
     useEffect(() => { console.log('Ground mounted') }, [])
-    const addPlacedObject = useStore((state) => state.addPlacedObject)
 
     // Polished industrial concrete floor - worn with scratches
     const floorProps = useTexture({
@@ -36,17 +33,10 @@ function Ground() {
         })
     }, [floorProps])
 
-    const handleClick = (e: ThreeEvent<MouseEvent>) => {
-        e.stopPropagation()
-        console.log('Placed monolith at:', e.point)
-        addPlacedObject([e.point.x, e.point.y, e.point.z])
-    }
-
     return (
         <mesh
             rotation={[-Math.PI / 2, 0, 0]}
             position={[0, 0.01, 0]}
-            onClick={handleClick}
             receiveShadow
         >
             <planeGeometry args={[22, 42]} />
@@ -509,6 +499,8 @@ function Products() {
 
 // ... Lights & Tunnel remain ...
 
+import ProductPanel3D from './ProductPanel'
+
 export default function Experience() {
     console.log('Experience rendering')
     useEffect(() => { console.log('Experience mounted') }, [])
@@ -538,6 +530,10 @@ export default function Experience() {
             <StoreManager />
             <Player />
             <HeroObject />
+
+            {/* Product Detail Panel - Inside 3D Scene */}
+            <ProductPanel3D />
         </>
     )
 }
+

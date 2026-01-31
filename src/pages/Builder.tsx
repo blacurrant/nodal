@@ -5,9 +5,10 @@ import {
     ChevronLeft, ChevronRight,
     Box, Lightbulb, Grid3X3, Plus, Send,
     RotateCcw, Move, ZoomIn, Eye, Settings,
-    Sparkles, Copy, Trash2
+    Sparkles, Copy, Trash2, Maximize, Minimize
 } from 'lucide-react'
 import Experience from '../Experience'
+import Crosshair from '../Crosshair'
 import * as THREE from 'three'
 
 // Scene hierarchy data
@@ -204,14 +205,18 @@ function ScenePanel({ selectedId, onSelect }: { selectedId: string | null; onSel
 }
 
 // Preview Panel (Center)
-function PreviewPanel() {
+function PreviewPanel({ isFullscreen, onToggleFullscreen }: { isFullscreen: boolean; onToggleFullscreen: () => void }) {
     const canvasRef = useRef<HTMLDivElement>(null)
     const [isInteracting, setIsInteracting] = useState(false)
 
     // Handle ESC key to exit interaction
     const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === 'Escape') {
-            setIsInteracting(false)
+            if (isFullscreen) {
+                onToggleFullscreen()
+            } else {
+                setIsInteracting(false)
+            }
         }
     }
 
@@ -259,6 +264,9 @@ function PreviewPanel() {
                         <Experience />
                     </Canvas>
                 </div>
+
+                {/* Crosshair for aiming */}
+                {isInteracting && <Crosshair />}
 
                 {/* ESC Hint - Shows when interacting */}
                 <AnimatePresence>
@@ -354,6 +362,25 @@ function PreviewPanel() {
                             {tool.icon}
                         </button>
                     ))}
+
+                    {/* Divider */}
+                    <div style={{ width: '1px', height: '20px', background: '#2A2A2A', margin: '0 4px' }} />
+
+                    {/* Fullscreen Toggle */}
+                    <button
+                        onClick={(e) => { e.stopPropagation(); onToggleFullscreen(); }}
+                        title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+                        style={{
+                            padding: '8px',
+                            borderRadius: '6px',
+                            background: isFullscreen ? 'rgba(184, 115, 51, 0.2)' : 'transparent',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: isFullscreen ? '#B87333' : '#6B665C',
+                        }}
+                    >
+                        {isFullscreen ? <Minimize size={14} /> : <Maximize size={14} />}
+                    </button>
                 </div>
             </div>
 
@@ -584,6 +611,9 @@ function ChatPanel() {
 // Main Builder Page
 export default function Builder() {
     const [selectedId, setSelectedId] = useState<string | null>('rack-1')
+    const [isFullscreen, setIsFullscreen] = useState(false)
+
+    const toggleFullscreen = () => setIsFullscreen(!isFullscreen)
 
     return (
         <div style={{
@@ -594,70 +624,72 @@ export default function Builder() {
             background: '#0D0D0D',
             overflow: 'hidden',
         }}>
-            {/* Header */}
-            <header style={{
-                height: '56px',
-                padding: '0 20px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                background: '#131313',
-                borderBottom: '1px solid #2A2A2A',
-            }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                    <a href="/" style={{
-                        padding: '8px',
-                        color: '#6B665C',
-                        textDecoration: 'none',
-                        display: 'flex',
-                    }}>
-                        <ChevronLeft size={18} />
-                    </a>
-                    <div style={{ height: '20px', width: '1px', background: '#2A2A2A' }} />
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{
-                            fontFamily: 'var(--font-family-display)',
-                            fontSize: '16px',
-                            color: '#F5F0E8',
+            {/* Header - Hidden in fullscreen */}
+            {!isFullscreen && (
+                <header style={{
+                    height: '56px',
+                    padding: '0 20px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    background: '#131313',
+                    borderBottom: '1px solid #2A2A2A',
+                }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        <a href="/" style={{
+                            padding: '8px',
+                            color: '#6B665C',
+                            textDecoration: 'none',
+                            display: 'flex',
                         }}>
-                            Nodal
-                        </span>
-                        <span style={{ color: '#2A2A2A' }}>/</span>
-                        <span style={{ fontSize: '14px', color: '#A09A8C' }}>Brutalist Vault</span>
+                            <ChevronLeft size={18} />
+                        </a>
+                        <div style={{ height: '20px', width: '1px', background: '#2A2A2A' }} />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{
+                                fontFamily: 'var(--font-family-display)',
+                                fontSize: '16px',
+                                color: '#F5F0E8',
+                            }}>
+                                Nodal
+                            </span>
+                            <span style={{ color: '#2A2A2A' }}>/</span>
+                            <span style={{ fontSize: '14px', color: '#A09A8C' }}>Brutalist Vault</span>
+                        </div>
                     </div>
-                </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <button style={{
-                        padding: '8px',
-                        borderRadius: '8px',
-                        background: 'transparent',
-                        border: 'none',
-                        cursor: 'pointer',
-                        color: '#6B665C',
-                    }}>
-                        <Settings size={18} />
-                    </button>
-                    <button style={{
-                        padding: '8px 20px',
-                        borderRadius: '8px',
-                        background: '#C9A227',
-                        border: 'none',
-                        cursor: 'pointer',
-                        color: '#0D0D0D',
-                        fontSize: '13px',
-                        fontWeight: 500,
-                    }}>
-                        Publish
-                    </button>
-                </div>
-            </header>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <button style={{
+                            padding: '8px',
+                            borderRadius: '8px',
+                            background: 'transparent',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: '#6B665C',
+                        }}>
+                            <Settings size={18} />
+                        </button>
+                        <button style={{
+                            padding: '8px 20px',
+                            borderRadius: '8px',
+                            background: '#C9A227',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: '#0D0D0D',
+                            fontSize: '13px',
+                            fontWeight: 500,
+                        }}>
+                            Publish
+                        </button>
+                    </div>
+                </header>
+            )}
 
             {/* Main Content */}
             <div style={{ flex: 1, display: 'flex', minHeight: 0 }}>
-                <ScenePanel selectedId={selectedId} onSelect={setSelectedId} />
-                <PreviewPanel />
-                <ChatPanel />
+                {!isFullscreen && <ScenePanel selectedId={selectedId} onSelect={setSelectedId} />}
+                <PreviewPanel isFullscreen={isFullscreen} onToggleFullscreen={toggleFullscreen} />
+                {!isFullscreen && <ChatPanel />}
             </div>
         </div>
     )

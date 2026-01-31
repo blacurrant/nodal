@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react'
 import { useThree, useFrame } from '@react-three/fiber'
 import { PointerLockControls } from '@react-three/drei'
-import { Vector3, Vector2, Raycaster } from 'three'
+import { Vector3, Vector2, Raycaster, Quaternion, Matrix4 } from 'three'
 import useStore from './store'
 import { PRODUCTS } from './store'
 
@@ -44,36 +44,70 @@ export default function Player() {
             }
         }
 
+        // Click to select products when pointer is locked
+        const onClick = () => {
+            if (!controlsRef.current?.isLocked) return
+
+            // Raycast from center of screen
+            raycaster.current.setFromCamera(new Vector2(0, 0), camera)
+            const intersects = raycaster.current.intersectObjects(scene.children, true)
+
+            for (const hit of intersects) {
+                // Walk up the parent chain to find a group with a name matching a product
+                let current = hit.object
+                while (current) {
+                    const userData = current.userData
+                    if (userData && userData.productId) {
+                        console.log('Clicked product:', userData.productId)
+                        setActiveProduct(userData.productId)
+                        return
+                    }
+                    current = current.parent as any
+                }
+            }
+        }
+
         window.addEventListener('keydown', onKeyDown)
         window.addEventListener('keyup', onKeyUp)
+        window.addEventListener('click', onClick)
         return () => {
             window.removeEventListener('keydown', onKeyDown)
             window.removeEventListener('keyup', onKeyUp)
+            window.removeEventListener('click', onClick)
         }
-    }, [])
+    }, [camera, scene, setActiveProduct])
 
     useFrame((_, delta) => {
         // If product is active, disable controls and lerp to view
         if (activeProductId) {
-            // Unlock pointer so they can gaze or click back? 
-            // Requirement says: "disable Player controls and smoothly interpolate... 2 meters in front"
-
+            // Unlock pointer so user can interact with the panel
             if (controlsRef.current?.isLocked) {
                 controlsRef.current.unlock()
             }
 
             const product = PRODUCTS.find(p => p.id === activeProductId)
             if (product) {
-                const targetPos = new Vector3(...product.position).add(new Vector3(0, 0, 2)) // 2 meters in front
-
-                // Smoothly move camera
-                camera.position.lerp(targetPos, 0.05)
-
-                // Look at the product (smooth lookAt is harder, but simplified:)
+                // Target position: 2 meters in front of the product, at eye level
                 const productPos = new Vector3(...product.position)
-                // Simple slerp-like lookAt? 
-                // For now, let's just make it look at it. To do it smoothly we'd need quat slerp.
-                camera.lookAt(productPos.x, productPos.y + 1.5, productPos.z) // Look at middle of monolith
+                const targetPos = new Vector3(
+                    productPos.x,
+                    1.6, // Eye level
+                    productPos.z + 2.5 // In front of the product
+                )
+
+                // Smoothly move camera to target position
+                camera.position.lerp(targetPos, 0.08)
+
+                // Calculate target rotation to look at product
+                const lookTarget = new Vector3(productPos.x, productPos.y + 0.5, productPos.z)
+
+                // Create a temporary matrix to get target quaternion
+                const tempMatrix = new Matrix4()
+                tempMatrix.lookAt(camera.position, lookTarget, new Vector3(0, 1, 0))
+                const targetQuat = new Quaternion().setFromRotationMatrix(tempMatrix)
+
+                // Smoothly interpolate camera rotation
+                camera.quaternion.slerp(targetQuat, 0.1)
             }
             return
         }
